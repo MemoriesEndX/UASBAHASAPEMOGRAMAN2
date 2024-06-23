@@ -1,0 +1,242 @@
+{% extends 'todos/base.html' %}
+
+{% block title %}
+<title>APLIKASI FRONT OFFICE HOTEL UNTUK INPUT DATA KAMAR</title>
+{% endblock %}
+{% load static %}
+
+{% block content %}
+
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">METRO HOTEL</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Link</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Dropdown
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Action</a></li>
+            <li><a class="dropdown-item" href="#">Another action</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#">Something else here</a></li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+        </li>
+      </ul>
+      <form class="d-flex" role="search">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+      </form>
+    </div>
+  </div>
+</nav>
+
+<!-- ALERT -->
+<div class="alert alert-danger d-flex align-items-center" role="alert">
+  <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+  <div>
+    <h3 style="font-weight: bold;">UAS</h3>
+<p><strong>Nama Pembuat:</strong> Dafa Rizqy (3337230010)</p>
+<p><strong>Mata Kuliah:</strong> Bahasa Pemrograman II</p>
+<p><strong>Kelas:</strong> B</p>
+
+  </div>
+</div>
+
+
+
+<div class="container">
+
+  
+  
+  <!-- title row -->
+  <div class="row">
+    <div class="offset-md-2 col-lg-9">
+      <div class="page-header">
+        <h1>
+          APLIKASI FRONT OFFICE HOTEL UNTUK INPUT DATA KAMAR
+        </h1>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add a todo row -->
+  <div class="row">
+    <div class="offset-md-2 col-lg-9">
+      <form method="post" action="{% url 'todos:add' %}">
+        {% csrf_token %}
+        <div class="form-row">
+          <div class="col-md-6">
+            <input type="text" class="form-control" name="title" placeholder="DATA KAMAR AKURAT, TAMU PUAS!!!!" required>
+          </div>
+          <div class="col-md-6">
+            <button type="submit" name="submit" class="btn btn-outline-primary">
+              Add
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <hr />
+
+  <!-- todo list row -->
+  <div class="row">
+    <div class="offset-md-2 col-lg-6">
+      <div class="list-group">
+        {% for todo in todo_list %}
+        <div class="list-group-item {% if todo.isCompleted %} todo-complete {% endif %}">
+          <form style="display: inline;" method="post" action="{% url 'todos:update' todo.id %}">
+            {% csrf_token %}
+            <input type="checkbox" name="isCompleted" onchange="this.form.submit()" {% if todo.isCompleted %} checked
+              {% endif %} class="todo-status-checkbox"
+              title="{% if not todo.isCompleted %} mark as done {% else %} mark undone {% endif %}">
+          </form>
+          {{ todo.title }}
+          <a href="{% url 'todos:delete' todo.id %}" title="Delete">
+            <i class="far fa-trash-alt"></i>
+          </a>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Button group row -->
+<div class="row justify-content-center mt-3">
+  <div class="col-lg-5 offset-lg-1 d-flex justify-content-center">
+    <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+      <a href="https://www.instagram.com/daffansyah_rizqy/" class="btn btn-danger button-spacing"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+      <a href="https://github.com/DaffansyahRizqy" class="btn btn-warning button-spacing"><i class="fa fa-github" aria-hidden="true"></i></a>
+      <a href="url_ke_halaman_kanan" class="btn btn-success button-spacing">UPDATE</a>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form method="post" action="">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="editModalLabel">Edit Todo</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" name="id" id="todo-id" value="">
+          <div class="form-group">
+            <label for="todo-title">Title</label>
+            <input type="text" class="form-control" name="title" id="todo-title" value="" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- headder -->
+<div class="mt-5">
+  <div class="row">
+      <div class="card col">
+          <div class="card-header">
+              FITUR TAMBAHAN
+          </div>
+          <div class="card-body">
+              <img src="<i class="<i class="fa fa-calendar" aria-hidden="true">
+              <h5 class="card-title">Integrasi Tanggal</h5>
+              <p class="card-text">Integrasi dengan tanggal jadi Front Office bisa melihat data tamu di sepanjang waktu.</p>
+              <a href="#" class="btn btn-primary">KLIKS</a>
+          </div>
+      </div>
+      <div class="card col">
+          <div class="card-header">
+              FITUR TAMBAHAN
+          </div>
+          <div class="card-body">
+              <img src="<i class="<i class="fa fa-whatsapp" aria-hidden="true">
+              <h5 class="card-title">Contact & Reservation </h5>
+              <p class="card-text">Anda bisa menghubungi kami untuk informasi lebih lanjut </p>
+              <a href="https://wa.me/6283107270104" class="btn btn-primary">KLIKS</a>
+          </div>
+      </div>
+      <div class="card col">
+          <div class="card-header">
+              FITUR TAMBAHAN
+          </div>
+          <div class="card-body">
+              <img src="<i class="fa fa-youtube-play" aria-hidden="true"></i>
+              <h5 class="card-title">Pembayaran Fleksibel</h5>
+              <p class="card-text">Anda bisa melakukan pembayaran yang Fleksibel menggunakan Cash & Q-Ris</p>
+              <a href="#" class="btn btn-primary">KLIKS</a>
+          </div>
+      </div>
+  </div>
+</div>
+
+<!-- NAV NEXT DLLNYA-->
+
+<div id="carouselExampleDark" class="carousel carousel-dark slide">
+  <div class="carousel-indicators">
+    <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+    <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="1" aria-label="Slide 2"></button>
+    <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="2" aria-label="Slide 3"></button>
+  </div>
+  <div class="carousel-inner">
+    <div class="carousel-item active" data-bs-interval="10000">
+      <img src="C:\Dev\Tutorial Djinggo\DJANGO_TODO LIST_DAFARIZQY_3337230010\gambar\gambar1.jpg" class="d-block w-100" alt="...">
+      <div class="carousel-caption d-none d-md-block">
+        <h5>First slide label</h5>
+        <p>Some representative placeholder content for the first slide.</p>
+      </div>
+    </div>
+    <div class="carousel-item" data-bs-interval="2000">
+      <img src="C:\Dev\Tutorial Djinggo\DJANGO_TODO LIST_DAFARIZQY_3337230010\gambar\gambar 2.png" class="d-block w-100" alt="...">
+      <div class="carousel-caption d-none d-md-block">
+        <h5>Second slide label</h5>
+        <p>Some representative placeholder content for the second slide.</p>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <img src="C:\Dev\Tutorial Djinggo\DJANGO_TODO LIST_DAFARIZQY_3337230010\gambar\gambar 3.png" class="d-block w-100" alt="...">
+      <div class="carousel-caption d-none d-md-block">
+        <h5>Third slide label</h5>
+        <p>Some representative placeholder content for the third slide.</p>
+      </div>
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+
+
+
+{% endblock %}
